@@ -17,7 +17,7 @@ const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 // Any variable of this type will have access to all the methods with the receiver *Tools.
 type Tools struct {
 	MaxFileSize      int64
-	allowedFileTypes []string
+	AllowedFileTypes []string
 }
 
 // RandomString returns a string of random characters of length n,
@@ -40,7 +40,7 @@ type UploadedFile struct {
 	FileSize         int64
 }
 
-func (t *Tools) UploadedFile(r *http.Request, uploadDir string, rename ...bool) ([]*UploadedFile, error) {
+func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) ([]*UploadedFile, error) {
 	renameFile := true
 	if len(rename) > 0 {
 		renameFile = rename[0]
@@ -77,8 +77,8 @@ func (t *Tools) UploadedFile(r *http.Request, uploadDir string, rename ...bool) 
 				allowed := false
 				fileType := http.DetectContentType(buff)
 
-				if len(t.allowedFileTypes) > 0 {
-					for _, x := range t.allowedFileTypes {
+				if len(t.AllowedFileTypes) > 0 {
+					for _, x := range t.AllowedFileTypes {
 						if strings.EqualFold(fileType, x) {
 							allowed = true
 						}
