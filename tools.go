@@ -11,17 +11,17 @@ import (
 	"strings"
 )
 
-const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_+"
 
-// Tools is the type used to instantiate this module.
-// Any variable of this type will have access to all the methods with the receiver *Tools.
+// Tools is the type used to instantiate this module. Any variable of this type will have access
+// to all the methods with the reciever *Tools
 type Tools struct {
-	MaxFileSize      int64
+	MaxFileSize      int
 	AllowedFileTypes []string
 }
 
-// RandomString returns a string of random characters of length n,
-// using randomStringSource as the source for the string.
+// RandomString returns a string of random characters of length n, using randomStringSource
+// as the source for the string
 func (t *Tools) RandomString(n int) string {
 	s, r := make([]rune, n), []rune(randomStringSource)
 	for i := range s {
@@ -33,7 +33,7 @@ func (t *Tools) RandomString(n int) string {
 	return string(s)
 }
 
-// UploadedFile is a struct used to save information about an uploaded file.
+// UploadedFile is a struct used to save information about an uploaded file
 type UploadedFile struct {
 	NewFileName      string
 	OriginalFileName string
@@ -45,6 +45,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 	if len(rename) > 0 {
 		renameFile = rename[0]
 	}
+
 	var uploadedFiles []*UploadedFile
 
 	if t.MaxFileSize == 0 {
@@ -52,7 +53,6 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 	}
 
 	err := r.ParseMultipartForm(int64(t.MaxFileSize))
-
 	if err != nil {
 		return nil, errors.New("the uploaded file is too big")
 	}
@@ -73,7 +73,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 					return nil, err
 				}
 
-				// TODO: check to see if the file type is permitted
+				// check to see if the file type is permitted
 				allowed := false
 				fileType := http.DetectContentType(buff)
 
@@ -114,6 +114,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 					}
 					uploadedFile.FileSize = fileSize
 				}
+
 				uploadedFiles = append(uploadedFiles, &uploadedFile)
 
 				return uploadedFiles, nil
